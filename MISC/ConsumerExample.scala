@@ -1,30 +1,22 @@
-import java.util
-
-import org.apache.kafka.clients.consumer.KafkaConsumer
-
 import scala.collection.JavaConverters._
+import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.common.serialization.StringDeserializer 
 
-object ConsumerExample extends App {
+object KafkaExample {
+  def main(args: Array[String]): Unit = {
+    val properties = new Properties()
+    properties.put("bootstrap.servers", "localhost:9092")
+    properties.put("group.id", "consumer-tutorial")
+    properties.put("key.deserializer", classOf[StringDeserializer])
+    properties.put("value.deserializer", classOf[StringDeserializer])
 
-  import java.util.Properties
+    val kafkaConsumer = new KafkaConsumer[String, String](properties)
+    kafkaConsumer.subscribe("firstTopic", "secondTopic")
 
-  val TOPIC="test"
-
-  val  props = new Properties()
-  props.put("bootstrap.servers", "localhost:9092")
-
-  props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-  props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-  props.put("group.id", "something")
-
-  val consumer = new KafkaConsumer[String, String](props)
-
-  consumer.subscribe(util.Collections.singletonList(TOPIC))
-
-  while(true){
-    val records=consumer.poll(100)
-    for (record<-records.asScala){
-     println(record)
+    while (true) {
+      val results = kafkaConsumer.poll(2000).asScala
+      for ((topic, data) <- results) {
+        // Do stuff
+      }
     }
-  }
 }
