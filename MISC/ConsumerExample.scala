@@ -11,7 +11,7 @@ object KafkaExample {
     properties.put("value.deserializer", classOf[StringDeserializer])
 
     val kafkaConsumer = new KafkaConsumer[String, String](properties)
-    kafkaConsumer.subscribe("firstTopic", "secondTopic")
+    kafkaConsumer.subscribe("testTopic")
 
     while (true) {
       val results = kafkaConsumer.poll(2000).asScala
